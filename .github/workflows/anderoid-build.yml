@@ -29,19 +29,25 @@ jobs:
           java-version: '17'
 
       - name: Install Dependencies
-        run: npm install
+  run: npm install
 
-      - name: Build Web App
-        run: npm run build
+- name: Build Web App
+  run: npm run build
 
-      - name: Sync Capacitor
-        run: npx cap sync
+- name: Verify dist folder
+  run: |
+    echo "Checking dist folder"
+    ls -la
+    ls -la dist
 
-      - name: Build Android APK
-        run: |
-          cd android
-          chmod +x gradlew
-          ./gradlew assembleDebug
+- name: Sync Capacitor
+  run: npx cap sync android
+
+- name: Build Android APK
+  run: |
+    cd android
+    chmod +x gradlew
+    ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
