@@ -4,15 +4,12 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
   build:
-    name: Build APK
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
@@ -20,7 +17,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -29,25 +26,26 @@ jobs:
           java-version: '17'
 
       - name: Install Dependencies
-  run: npm install
+        run: npm install
 
-- name: Build Web App
-  run: npm run build
+      - name: Build Web App
+        run: npm run build
 
-- name: Verify dist folder
-  run: |
-    echo "Checking dist folder"
-    ls -la
-    ls -la dist
+      - name: Verify dist folder
+        run: |
+          echo "Listing root directory"
+          ls -la
+          echo "Listing dist directory"
+          ls -la dist
 
-- name: Sync Capacitor
-  run: npx cap sync android
+      - name: Sync Capacitor
+        run: npx cap sync android
 
-- name: Build Android APK
-  run: |
-    cd android
-    chmod +x gradlew
-    ./gradlew assembleDebug
+      - name: Build Android APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
